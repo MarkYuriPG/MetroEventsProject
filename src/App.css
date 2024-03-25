@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+button {
+  width: 75px;
+  padding: 8px 16px;
+  margin-right: 8px;
+  text-align: center;
+}
+
+.table-container{
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.event-table {
+  border-collapse: collapse;
+  width: 50%;
+}
+
+.event-table th, .event-table td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.event-table th {
+  background-color: #f2f2f2;
+}
