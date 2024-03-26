@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
 function Registration() {
   const [formData, setFormData] = useState({
@@ -35,28 +36,70 @@ function Registration() {
   };
 
   return (
-    <div>
-      <h1>Registration</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
-        </div>
-        <div>
-          <label htmlFor="role">Role:</label>
-          <select id="role" name="role" value={formData.role} onChange={handleChange} required >
-            <option value={0}>Regular User</option>
-            <option value={2}>Administrator</option>
-          </select>
-        </div>
-        <button type="submit">Register</button>
-        <button type="button" onClick={handleCancel}>Cancel</button>
+    <div className="form-view">
+      <form onSubmit={handleSubmit} className="registration-form">
+        <Typography component="h1" variant="h5">
+          Registration
+        </Typography>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="username"
+          label="Username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="password"
+          label="Password"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <FormControl fullWidth variant="outlined" margin="normal">
+          <InputLabel id="role-label">Role</InputLabel>
+          <Select
+            labelId="role-label"
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            label="Role"
+            required
+          >
+            <MenuItem value={0}>Regular User</MenuItem>
+            <MenuItem value={2}>Administrator</MenuItem>
+          </Select>
+        </FormControl>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+        >
+          Register
+        </Button>
+        <Button
+          type="button"
+          fullWidth
+          variant="outlined"
+          color="secondary"
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
       </form>
-      <p>Already have an account? <Link to="/login">Login</Link></p>
+      <Typography variant="body2">
+        Already have an account? <Link to="/login">Login</Link>
+      </Typography>
     </div>
   );
 }

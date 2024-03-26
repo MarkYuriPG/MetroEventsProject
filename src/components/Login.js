@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { TextField, Button, Typography, Container } from '@mui/material';
+import { TextField, Button, Typography } from '@mui/material';
 
 function LoginScreen({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
@@ -34,7 +34,7 @@ function LoginScreen({ setIsLoggedIn }) {
   };
 
   return (
-    <div className="login-view">
+    <div className="form-view">
       <form onSubmit={handleSubmit} className="login-form">
         <Typography component="h1" variant="h5">
           Login
@@ -71,7 +71,9 @@ function LoginScreen({ setIsLoggedIn }) {
           Login
         </Button>
       </form>
-      <p>Don't have an account? <Link to="/register">Register</Link></p>
+      <Typography variant="body2">
+        Don't have an account? <Link to="/register">Register</Link>
+      </Typography>
     </div>
   );
 }
