@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { TextField, Button, Typography, Container } from '@mui/material';
 
 function LoginScreen({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
@@ -31,18 +32,42 @@ function LoginScreen({ setIsLoggedIn }) {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input type="text" id="username" name="username" value={username} onChange={handleChange} required />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input type="password" id="password" name="password" value={password} onChange={handleChange} required />
-        </div>
-        <button type="submit">Login</button>
+    <div className="login-view">
+      <form onSubmit={handleSubmit} className="login-form">
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="username"
+          label="Username"
+          name="username"
+          value={username}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="password"
+          label="Password"
+          name="password"
+          type="password"
+          value={password}
+          onChange={handleChange}
+          required
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+        >
+          Login
+        </Button>
       </form>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>
