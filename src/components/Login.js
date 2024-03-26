@@ -24,6 +24,8 @@ function LoginScreen({ setIsLoggedIn }) {
     try {
         const response = await axios.post(`https://localhost:7097/api/Users/Login/${username}&${password}`);
         console.log('Login successful:', response.data);
+        const { userId } = response.data; // Assuming server returns userId
+        localStorage.setItem('userId', userId);
         setIsLoggedIn(true);
         navigate('/home');
     } catch (error) {
