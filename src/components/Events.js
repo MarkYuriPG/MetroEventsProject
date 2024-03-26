@@ -12,7 +12,7 @@ function Events() {
     }, []);
   
     const GetEvents = () => {
-      axios.get('https://localhost:7097/api/Events/Get')
+      axios.get('https://localhost:7097/api/Events')
         .then((response) => {
           console.log(response.data);
           setEvents(response.data);
@@ -23,7 +23,7 @@ function Events() {
     };
   
     const CreateEvent = () => {
-      axios.post('https://localhost:7097/api/Events/Create', formData)
+      axios.post('https://localhost:7097/api/Events', formData)
         .then(() => {
           console.log(formData);
           GetEvents();
@@ -44,7 +44,7 @@ function Events() {
   
     const DeleteEvent = (eventId) => {
       if (window.confirm("Are you sure you want to delete this event?")) {
-        axios.delete(`https://localhost:7097/api/Events/Delete/${eventId}`)
+        axios.delete(`https://localhost:7097/api/Events/${eventId}`)
           .then(() => {
             console.log("Event deleted successfully");
             GetEvents();
@@ -87,7 +87,7 @@ function Events() {
   
     const handleSaveEdit = (eventId) => {
       if (window.confirm("Are you sure you want to save the changes?")) {
-        axios.put(`https://localhost:7097/api/Events/Update`, editableData[eventId])
+        axios.put(`https://localhost:7097/api/Events`, editableData[eventId])
           .then(() => {
             console.log(editableData);
             GetEvents();
