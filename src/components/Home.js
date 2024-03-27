@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Assuming you're using axios for HTTP requests
 import Card from './Card'; // Import Card component
+import CreateEventDialog from './CreateEventDialog';
 
 function Home() {
     const [events, setEvents] = useState([]);
     const [userId, setUserId] = useState(null);
     const [userEvents, setUserEvents] = useState([]);
+    const [showCreateEvent, setShowCreateEvent] = useState(false);
 
     useEffect(() => {
         fetchEvents();
@@ -73,9 +75,17 @@ function Home() {
         return userEvents.some(userEvent => userEvent.eventId === eventId);
     };
 
+    const handleCreateEventOpen = () => {
+        setShowCreateEvent(true);
+      };
+    
+      const handleCreateEventClose = () => {
+        setShowCreateEvent(false);
+      };
+
     return (
         <div className="event-container">
-            <h1>Upcoming Events</h1>
+            <button onClick={handleCreateEventOpen}>Create Event</button>
             <div className="event-cards">
                 {events.map(event => (
                     <Card
@@ -86,6 +96,7 @@ function Home() {
                     />
                 ))}
             </div>
+            {showCreateEvent && <CreateEventDialog onClose={handleCreateEventClose} />}
         </div>
     );
 }
