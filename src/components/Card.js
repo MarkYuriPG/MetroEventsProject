@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Card({ event, onLike, isLiked }) {
+function Card({ event, onJoinRequest }) {
     return (
         <div className="event-card">
             <h2>{event.eventName}</h2>
@@ -8,10 +8,10 @@ function Card({ event, onLike, isLiked }) {
             <p>Organizer: {event.organizer}</p>
             <p>Date: {event.date}</p>
             <p>Location: {event.location}</p>
-            <p>Likes: {isLiked ? event.likes + 1 : event.likes}</p>
+            {/* <p>Likes: {isLiked ? event.likes + 1 : event.likes}</p> */}
             {/* Change button text based on whether the event is liked or not */}
-            <button onClick={onLike}>{isLiked ? 'Unlike' : 'Like'}</button>
-            <button>Request to Join</button>
+            {/* <button onClick={onLike}>{isLiked ? 'Unlike' : 'Like'}</button> */}
+            <button onClick={onJoinRequest}>Request to Join</button>
         </div>
     );
 }

@@ -43,9 +43,21 @@ function Admin(){
                 console.log("Error updating user:", error);
             });
     };
+
+    const getUserStatus = (status) => {
+        switch (status) {
+            case 0:
+                return 'Online';
+            case 1:
+                return 'Offline';
+            default:
+                return 'Unknown';
+        }
+    };
+
     return(
         <div>
-            <h2>User List</h2>
+            <h2>Users</h2>
             <div className="table-container">
                 <table className='event-table'>
                     <thead>
@@ -54,7 +66,6 @@ function Admin(){
                             <th>User Name</th>
                             <th>Password</th>
                             <th>Role</th>
-                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,8 +85,10 @@ function Admin(){
                                     <option value={1}>Organizer</option>
                                     <option value={2}>Admin</option>
                                 </select>
-                            </td>
-                                <td>{user.status}</td>
+                                </td>
+                                <td>
+                                    <button>Delete</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

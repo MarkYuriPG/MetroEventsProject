@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Card from './Card';
 import CreateEventDialog from './CreateEventDialog';
-
+import Admin from './Admin';
 function Home() {
     const [events, setEvents] = useState([]);
     const [approvedEvents, setApprovedEvents] = useState([]);
@@ -14,6 +14,7 @@ function Home() {
     const [showRefresh, setShowRefresh] = useState(false);
     const [users, setUsers] = useState(null);
     const [user, setUser] = useState(null);
+    const [showAppUsers, setShowAppUsers] = useState(false);
 
     useEffect(() => {
         fetchEvents();
@@ -49,35 +50,35 @@ function Home() {
         }
     };
 
-    const handleLikeEvent = async (eventId) => {
-        console.log(eventId + " " + userId);
-        try {
-            // Make a POST request to create a new UserEvent association
-            await axios.post(`https://localhost:7097/api/UserEvents?eventId=${eventId}&userId=${userId}`);
-            setUserEvents(prevUserEvents => [...prevUserEvents, { eventId, userId }]);
-            console.log("Successfully added UserEvent:", { eventId, userId });
-        } catch (error) {
-            console.error('Error liking event:', error);
-        }
-    };
+    // const handleLikeEvent = async (eventId) => {
+    //     console.log(eventId + " " + userId);
+    //     try {
+    //         // Make a POST request to create a new UserEvent association
+    //         await axios.post(`https://localhost:7097/api/UserEvents?eventId=${eventId}&userId=${userId}`);
+    //         setUserEvents(prevUserEvents => [...prevUserEvents, { eventId, userId }]);
+    //         console.log("Successfully added UserEvent:", { eventId, userId });
+    //     } catch (error) {
+    //         console.error('Error liking event:', error);
+    //     }
+    // };
 
-    const handleUnlikeEvent = async (eventId) => {
-        try {
-            // Find the UserEvent association to delete
-            const targetUserEvent = userEvents.find(userEvent => userEvent.eventId === eventId);
-            if (!targetUserEvent) {
-                console.error('UserEvent association not found');
-                return;
-            }
-            // Make a DELETE request to remove the UserEvent association
-            await axios.delete(`https://localhost:7097/api/UserEvents/${userId}/${eventId}`);
-            // Update the userEvents state to reflect the change
-            setUserEvents(prevUserEvents => prevUserEvents.filter(userEvent => userEvent.eventId !== eventId));
-            console.log("success delete");
-        } catch (error) {
-            console.error('Error unliking event:', error);
-        }
-    };
+    // const handleUnlikeEvent = async (eventId) => {
+    //     try {
+    //         // Find the UserEvent association to delete
+    //         const targetUserEvent = userEvents.find(userEvent => userEvent.eventId === eventId);
+    //         if (!targetUserEvent) {
+    //             console.error('UserEvent association not found');
+    //             return;
+    //         }
+    //         // Make a DELETE request to remove the UserEvent association
+    //         await axios.delete(`https://localhost:7097/api/UserEvents/${userId}/${eventId}`);
+    //         // Update the userEvents state to reflect the change
+    //         setUserEvents(prevUserEvents => prevUserEvents.filter(userEvent => userEvent.eventId !== eventId));
+    //         console.log("success delete");
+    //     } catch (error) {
+    //         console.error('Error unliking event:', error);
+    //     }
+    // };
 
     const fetchUserRole = async (userId) => {
         try {
@@ -129,9 +130,9 @@ function Home() {
         }
     };
 
-    const isEventLikedByUser = (eventId) => {
-        return userEvents.some(userEvent => userEvent.eventId === eventId);
-    };
+    // const isEventLikedByUser = (eventId) => {
+    //     return userEvents.some(userEvent => userEvent.eventId === eventId);
+    // };
 
     const handleCreateEventOpen = () => {
         setShowCreateEvent(true);
@@ -180,6 +181,9 @@ function Home() {
             console.error("Failed to update approval status:", error);
         }
     };
+    const handleRequestJoin = (userId, eventId) =>{
+        console.log(`request to join sent from ${userId} in ${eventId}`);
+    };
 
     const handleReject = async (eventId) => {
         // Display a confirmation dialog
@@ -209,19 +213,33 @@ function Home() {
         }
     };
 
+    const handleAppUsers = () => {
+        if(showAppUsers)
+        {
+            setShowAppUsers(false);
+        }
+        else
+        {
+            setShowAppUsers(true);
+        }
+    }
+
     return (
         <div className="event-container">
             <button onClick={handleCreateEventOpen}>Create Event</button>
             {userRole === 2 && (
                 <>
                     <button onClick={handleOnclickEventRequest}>Event Requests</button>
-                    <button>App Users</button>
+                    <button onClick={handleAppUsers}>App Users</button>
                 </>
             )}
             {userRole === 1 && (
                 <button>Organize Events</button>
             )}
             {showRefresh && (<button onClick={fetchEvents}>Refresh</button>)}
+            {showAppUsers && (
+                <Admin/>
+            )}
             {showEventRequests && (
                 <div className="table-container">
                     <table className='event-table'>
@@ -268,8 +286,9 @@ function Home() {
                     <Card
                         key={event.eventId}
                         event={event}
-                        onLike={() => isEventLikedByUser(event.eventId) ? handleUnlikeEvent(event.eventId) : handleLikeEvent(event.eventId)}
-                        isLiked={isEventLikedByUser(event.eventId)}
+                        // onLike={() => isEventLikedByUser(event.eventId) ? handleUnlikeEvent(event.eventId) : handleLikeEvent(event.eventId)}
+                        // isLiked={isEventLikedByUser(event.eventId)}
+                        onJoinRequest={()=> handleRequestJoin(userId, event.eventId)}
                     />
                 ))}
             </div>
