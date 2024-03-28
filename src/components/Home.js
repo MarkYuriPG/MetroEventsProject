@@ -15,13 +15,15 @@ function Home() {
     const [users, setUsers] = useState(null);
     const [user, setUser] = useState(null);
     const [showAppUsers, setShowAppUsers] = useState(false);
+    const [requestSent, setRequestSent] = useState(false);
 
     useEffect(() => {
         fetchEvents();
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
             setUserId(storedUserId);
-            fetchUserEvents(storedUserId);
+            // fetchUserEvents(storedUserId);
+            fetchUserEvents();
             fetchUserRole(storedUserId);
         }
         fetchUsers();
@@ -38,17 +40,26 @@ function Home() {
         }
     };
 
-    // Function to fetch user's liked events from the backend
-    const fetchUserEvents = async (userId) => {
+    const fetchUserEvents = async () => {
         try {
             const response = await axios.get(`https://localhost:7097/api/UserEvents`);
-            const filteredUserEvents = response.data.filter(userEvent => userEvent.userId === parseInt(userId,10));
-            console.log(filteredUserEvents);
-            setUserEvents(filteredUserEvents);
+            setUserEvents(response.data);
         } catch (error) {
             console.error('Error fetching user events:', error);
         }
     };
+
+    // Function to fetch user's liked events from the backend
+    // const fetchUserEvents = async (userId) => {
+    //     try {
+    //         const response = await axios.get(`https://localhost:7097/api/UserEvents`);
+    //         const filteredUserEvents = response.data.filter(userEvent => userEvent.userId === parseInt(userId,10));
+    //         console.log(filteredUserEvents);
+    //         setUserEvents(filteredUserEvents);
+    //     } catch (error) {
+    //         console.error('Error fetching user events:', error);
+    //     }
+    // };
 
     // const handleLikeEvent = async (eventId) => {
     //     console.log(eventId + " " + userId);
@@ -155,10 +166,27 @@ function Home() {
         }
     };
 
+    const handleRequestJoin = async (userId, eventId) =>{
+        try{
+            await axios.post(`https://localhost:7097/api/UserEvents?eventId=${eventId}&userId=${userId}`);
+            await Promise.all([fetchEvents(), fetchUserEvents()]);
+            console.log("Request created" + userEvents);
+        }catch(error){
+            console.log("Error join request", error);
+        }
+    };
+
+    const checkRequest = (userId, eventId) => {
+        if(!Array.isArray(userEvents))
+        {
+            return false;
+        }
+        return userEvents.some(e => e.userId === userId && e.eventId === eventId);
+    };
+
     const handleApprove = async (eventId) => {
         try {
             // Fetch the event details from events state
-            
             const eventToUpdate = events.find(event => event.eventId === eventId);
             if (!eventToUpdate) {
                 console.error('Event not found');
@@ -180,9 +208,6 @@ function Home() {
         } catch (error) {
             console.error("Failed to update approval status:", error);
         }
-    };
-    const handleRequestJoin = (userId, eventId) =>{
-        console.log(`request to join sent from ${userId} in ${eventId}`);
     };
 
     const handleReject = async (eventId) => {
@@ -288,7 +313,8 @@ function Home() {
                         event={event}
                         // onLike={() => isEventLikedByUser(event.eventId) ? handleUnlikeEvent(event.eventId) : handleLikeEvent(event.eventId)}
                         // isLiked={isEventLikedByUser(event.eventId)}
-                        onJoinRequest={()=> handleRequestJoin(userId, event.eventId)}
+                        // onJoinRequest={()=> handleRequestJoin(userId, event.eventId)}
+                        // checkSent={()=>checkRequest(userId, event.eventId)}
                     />
                 ))}
             </div>
