@@ -3,6 +3,8 @@ import axios from 'axios';
 import Card from './Card';
 import CreateEventDialog from './CreateEventDialog';
 import Admin from './Admin';
+import Organizer from './Organizer';
+
 function Home() {
     const [events, setEvents] = useState([]);
     const [approvedEvents, setApprovedEvents] = useState([]);
@@ -16,6 +18,7 @@ function Home() {
     const [user, setUser] = useState(null);
     const [showAppUsers, setShowAppUsers] = useState(false);
     const [requestSent, setRequestSent] = useState(false);
+    const [showOrganizeEvents, setShowOrganizeEvents] = useState(false);
 
     useEffect(() => {
         fetchEvents();
@@ -48,6 +51,7 @@ function Home() {
             console.error('Error fetching user events:', error);
         }
     };
+
 
     // Function to fetch user's liked events from the backend
     // const fetchUserEvents = async (userId) => {
@@ -249,17 +253,27 @@ function Home() {
         }
     }
 
+    const handleOrganizeEventsClick = () => {
+        setShowOrganizeEvents(!showOrganizeEvents);
+    };
+
     return (
         <div className="event-container">
             <button onClick={handleCreateEventOpen}>Create Event</button>
+            {(userRole === 1 || userRole === 2) && (
+                <button onClick={handleOrganizeEventsClick}>Organize Events</button>
+            )}
             {userRole === 2 && (
                 <>
-                    <button onClick={handleOnclickEventRequest}>Event Requests</button>
                     <button onClick={handleAppUsers}>App Users</button>
+                    <button onClick={handleOnclickEventRequest}>Event Requests</button>
                 </>
             )}
-            {userRole === 1 && (
-                <button>Organize Events</button>
+            {showOrganizeEvents && (
+                <Organizer
+                    users={users}
+                    events={events}
+                />
             )}
             {showRefresh && (<button onClick={fetchEvents}>Refresh</button>)}
             {showAppUsers && (

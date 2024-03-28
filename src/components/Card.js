@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import Event from './Event';
 
 function Card({ event }) {
     const [userEvents, setUserEvents] = useState([]);
-    const [sent, setSent] = useState(false);
     const [userId, setUserId] = useState(0);
 
     useEffect(() => {
@@ -19,9 +20,8 @@ function Card({ event }) {
         try {
             const response = await axios.get(`https://localhost:7097/api/UserEvents`);
             setUserEvents(response.data);
-            checkRequest();
         } catch (error) {
-            console.log("error fetching userevents");
+            console.log("Error fetching user events:", error);
         }
     };
 
@@ -36,11 +36,9 @@ function Card({ event }) {
     };
 
     const checkRequest = () => {
-        if (userEvents.length > 0) {
-            setSent(userEvents.some(e => e.userId === userId && e.eventId === event.eventId));
-        } else {
-            setSent(false);
-        }
+        // Check if the user has already joined the event
+        const joinedEvent = userEvents.find(e => e.userId === userId && e.eventId === event.eventId);
+        return joinedEvent && joinedEvent.status === 2;
     };
 
     return (
@@ -50,9 +48,14 @@ function Card({ event }) {
             <p>Organizer: {event.organizer}</p>
             <p>Date: {event.date}</p>
             <p>Location: {event.location}</p>
-            <button onClick={() => handleJoinRequest(event.eventId)} disabled={sent}>
-                {sent ? 'Request Sent' : 'Request to Join'}
-            </button>
+            {checkRequest() ? (
+                <p>Already Joined</p>
+            ) : (
+                <button onClick={() => handleJoinRequest(event.eventId)} disabled={!!userEvents.find(e => e.userId === userId && e.eventId === event.eventId)}>
+                    Request to Join
+                </button>
+            )}
+            <Link to={`/event/${event.eventId}`}>View Details</Link>
         </div>
     );
 }

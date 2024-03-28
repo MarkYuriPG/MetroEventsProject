@@ -9,6 +9,7 @@ import Menu from './components/Menu';
 import Registration from './components/Registration';
 import Login from './components/Login';
 import Profile from './components/Profile';
+import Event from './components/Event';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +27,7 @@ function App() {
             <>
               <Route path="/home" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/event/:eventId" element={<Event />} />
               <Route path="/" element={<Navigate to="/home" />} />
             </>
           ) : (
