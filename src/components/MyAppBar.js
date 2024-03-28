@@ -19,9 +19,6 @@ function MyAppBar({ isLoggedIn, handleLogout }) {
           <Button component={Link} to="/Events" variant="text" sx={{ color: 'white' }}>
             Events
           </Button>
-          <Button component={Link} to="/Admin" variant="text" sx={{ color: 'white' }}>
-            Admin
-          </Button>
           {isLoggedIn ? (
             <Button onClick={handleLogout} variant="text" sx={{ color: 'white' }}>
               Logout
