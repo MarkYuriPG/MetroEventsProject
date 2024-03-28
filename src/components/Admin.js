@@ -13,7 +13,7 @@ function Admin(){
     }, []);
   
     const GetUsers = () => {
-      axios.get('https://localhost:7097/api/Users/Get')
+      axios.get('https://localhost:7097/api/Users')
         .then((response) => {
           console.log(response.data);
           setUsers(response.data);
@@ -35,7 +35,7 @@ function Admin(){
     
         // Send a PUT request to update the user in the backend
         console.log(updatedUser);
-        axios.put(`https://localhost:7097/api/Users/Update`, updatedUser)
+        axios.put(`https://localhost:7097/api/Users`, updatedUser)
             .then((response) => {
                 console.log("User updated successfully:", response.data);
             })

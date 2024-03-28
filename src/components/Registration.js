@@ -24,7 +24,7 @@ function Registration() {
     try {
        const roleIndex = parseInt(formData.role);
        const dataToSend = { ...formData, role: roleIndex };
-       const response = await axios.post('https://localhost:7097/api/Users/Create', dataToSend);
+       const response = await axios.post('https://localhost:7097/api/Users', dataToSend);
        console.log('Registration successful:', response.data);
     } catch (error) {
       console.error('Registration failed:', error);

@@ -13,7 +13,7 @@ function Profile() {
 
     const fetchUser = async (userId) => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Users/Get/${userId}`);
+            const response = await axios.get(`https://localhost:7097/api/Users/${userId}`);
             setUser(response.data);
         } catch (error) {
             console.error('Error fetching user profile:', error);

@@ -17,7 +17,7 @@ function CreateEventDialog({ onClose, organizer }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://localhost:7097/api/Users/Get/${organizer}`);
+        const response = await axios.get(`https://localhost:7097/api/Users/${organizer}`);
         setUser(response.data);
         setOrganizerName(response.data.userName);
         setLoading(false);

@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
 
-function LoginScreen({ setIsLoggedIn }) {
+function LoginScreen({ setIsLoggedIn, setUserRole }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [redirectToHome, setRedirectToHome] = useState(false);

@@ -81,7 +81,7 @@ function Home() {
 
     const fetchUserRole = async (userId) => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Users/Get/${userId}`);
+            const response = await axios.get(`https://localhost:7097/api/Users/${userId}`);
             setUserRole(response.data.role);
         } catch (error) {
             console.error('Error fetching user role:', error);
@@ -90,7 +90,7 @@ function Home() {
 
     const fetchUsers = async () => {
         try{
-            const response = await axios.get(`https://localhost:7097/api/Users/Get`);
+            const response = await axios.get(`https://localhost:7097/api/Users`);
             setUsers(response.data);
         }catch(error){
             console.error('Error fetching users.', error);
@@ -122,7 +122,7 @@ function Home() {
                 user.role = 0;
             }
 
-            const response = await axios.put(`https://localhost:7097/api/Users/Update`, user);
+            const response = await axios.put(`https://localhost:7097/api/Users`, user);
             console.log(response);
         }catch (error) {
             console.log("Error updating role", error);
@@ -213,7 +213,10 @@ function Home() {
         <div className="event-container">
             <button onClick={handleCreateEventOpen}>Create Event</button>
             {userRole === 2 && (
-                <button onClick={handleOnclickEventRequest}>Event Requests</button>
+                <>
+                    <button onClick={handleOnclickEventRequest}>Event Requests</button>
+                    <button>App Users</button>
+                </>
             )}
             {userRole === 1 && (
                 <button>Organize Events</button>

@@ -11,6 +11,7 @@ function Card({ event, onLike, isLiked }) {
             <p>Likes: {isLiked ? event.likes + 1 : event.likes}</p>
             {/* Change button text based on whether the event is liked or not */}
             <button onClick={onLike}>{isLiked ? 'Unlike' : 'Like'}</button>
+            <button>Request to Join</button>
         </div>
     );
 }
