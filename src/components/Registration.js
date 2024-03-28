@@ -10,6 +10,7 @@ function Registration() {
     role: 0,
     status: 0,
   });
+  const [registrationMessage, setRegistrationMessage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,8 +26,10 @@ function Registration() {
        const roleIndex = parseInt(formData.role);
        const dataToSend = { ...formData, role: roleIndex };
        const response = await axios.post('https://localhost:7097/api/Users', dataToSend);
+       setRegistrationMessage('Registration successful');
        console.log('Registration successful:', response.data);
     } catch (error) {
+      setRegistrationMessage('Registration failed. User already exists.');
       console.error('Registration failed:', error);
     }
   };
@@ -97,6 +100,11 @@ function Registration() {
           Cancel
         </Button>
       </form>
+      {registrationMessage && (
+        <Typography variant="body2" color={registrationMessage.includes('successful') ? 'green' : 'red'}>
+          {registrationMessage}
+        </Typography>
+      )}
       <Typography variant="body2">
         Already have an account? <Link to="/login">Login</Link>
       </Typography>

@@ -6,8 +6,8 @@ import { TextField, Button, Typography } from '@mui/material';
 function LoginScreen({ setIsLoggedIn, setUserRole }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [redirectToHome, setRedirectToHome] = useState(false);
-  const navigate = useNavigate()
+  const [loginMessage, setLoginMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +27,11 @@ function LoginScreen({ setIsLoggedIn, setUserRole }) {
         const { userId } = response.data; // Assuming server returns userId
         localStorage.setItem('userId', userId);
         setIsLoggedIn(true);
+        setLoginMessage('Login successful');
         navigate('/home');
     } catch (error) {
       console.error('Login failed:', error);
+      setLoginMessage('Login failed. Check your Username or Password.');
     }
   };
 
@@ -71,6 +73,11 @@ function LoginScreen({ setIsLoggedIn, setUserRole }) {
           Login
         </Button>
       </form>
+      {loginMessage && (
+        <Typography variant="body2" color={loginMessage.includes('successful') ? 'green' : 'red'}>
+          {loginMessage}
+        </Typography>
+      )}
       <Typography variant="body2">
         Don't have an account? <Link to="/register">Register</Link>
       </Typography>
