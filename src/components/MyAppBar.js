@@ -2,11 +2,14 @@ import React, {useState,useEffect} from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import host from '../host.js';
 
 function MyAppBar({ isLoggedIn, handleLogout }) {
   const [user, setUser] = useState(null);
   const userId = parseInt(localStorage.getItem('userId'),10);
   
+  const api = host.apiUrl;
+
   useEffect(()=>{
     if(userId)
     {
@@ -16,7 +19,7 @@ function MyAppBar({ isLoggedIn, handleLogout }) {
 
   const fetchUser = async (userId) => {
     try{
-      const response = await axios.get(`https://localhost:7097/api/Users/${userId}`);
+      const response = await axios.get(`${api}/Users/${userId}`);
       setUser(response.data);
     }catch(error){ 
       console.log("error fetching user");

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import host from '../host.js';
 
 function Registration() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ function Registration() {
     status: 0,
   });
   const [registrationMessage, setRegistrationMessage] = useState(null);
+
+  const api = host.apiUrl;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +28,7 @@ function Registration() {
     try {
        const roleIndex = parseInt(formData.role);
        const dataToSend = { ...formData, role: roleIndex };
-       const response = await axios.post('https://localhost:7097/api/Users', dataToSend);
+       const response = await axios.post(`${api}/Users`, dataToSend);
        setRegistrationMessage('Registration successful');
        console.log('Registration successful:', response.data);
     } catch (error) {

@@ -3,6 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import host from '../host.js';
 
 function CreateEventDialog({ onClose, organizer }) {
   const [eventName, setEventName] = useState('');
@@ -14,10 +15,12 @@ function CreateEventDialog({ onClose, organizer }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const api = host.apiUrl;
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://localhost:7097/api/Users/${organizer}`);
+        const response = await axios.get(`${api}/Users/${organizer}`);
         setUser(response.data);
         setOrganizerName(response.data.userName);
         setLoading(false);
@@ -42,7 +45,7 @@ function CreateEventDialog({ onClose, organizer }) {
         isApproved: false,
       };
   
-      await axios.post('https://localhost:7097/api/Events', event);
+      await axios.post(`${api}/Events`, event);
       alert('Event creation request sent successfully!');
       onClose(); // Close the dialog
     } catch (error) {

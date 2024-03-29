@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Event from './Event';
+import host from '../host.js';
 
 function Card({ event }) {
     const [userEvents, setUserEvents] = useState([]);
     const [userId, setUserId] = useState(0);
+
+    const api = host.apiUrl;
 
     useEffect(() => {
         fetchUserEvents();
@@ -18,7 +21,7 @@ function Card({ event }) {
 
     const fetchUserEvents = async () => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/UserEvents`);
+            const response = await axios.get(`${api}/UserEvents`);
             setUserEvents(response.data);
         } catch (error) {
             console.log("Error fetching user events:", error);
@@ -27,7 +30,7 @@ function Card({ event }) {
 
     const handleJoinRequest = async (eventId) => {
         try {
-            await axios.post(`https://localhost:7097/api/UserEvents?eventId=${eventId}&userId=${userId}`);
+            await axios.post(`${api}/UserEvents?eventId=${eventId}&userId=${userId}`);
             fetchUserEvents();
             console.log("Request created");
         } catch (error) {

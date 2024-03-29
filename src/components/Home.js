@@ -4,6 +4,7 @@ import Card from './Card';
 import CreateEventDialog from './CreateEventDialog';
 import Admin from './Admin';
 import Organizer from './Organizer';
+import host from '../host.js';
 
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,6 +24,8 @@ function Home() {
     const [requestSent, setRequestSent] = useState(false);
     const [showOrganizeEvents, setShowOrganizeEvents] = useState(false);
 
+    const api = host.apiUrl;
+
     useEffect(() => {
         fetchEvents();
         const storedUserId = localStorage.getItem('userId');
@@ -37,7 +40,7 @@ function Home() {
 
     const fetchEvents = async () => {
         try {
-            const response = await axios.get('https://localhost:7097/api/Events');
+            const response = await axios.get(`${api}/Events`);
             setEvents(response.data);
             const approvedEventsData = response.data.filter(event => event.approval === 2);
             setApprovedEvents(approvedEventsData);
@@ -48,7 +51,7 @@ function Home() {
 
     const fetchUserEvents = async () => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/UserEvents`);
+            const response = await axios.get(`${api}/UserEvents`);
             setUserEvents(response.data);
         } catch (error) {
             console.error('Error fetching user events:', error);
@@ -59,7 +62,7 @@ function Home() {
     // Function to fetch user's liked events from the backend
     // const fetchUserEvents = async (userId) => {
     //     try {
-    //         const response = await axios.get(`https://localhost:7097/api/UserEvents`);
+    //         const response = await axios.get(`${api}/UserEvents`);
     //         const filteredUserEvents = response.data.filter(userEvent => userEvent.userId === parseInt(userId,10));
     //         console.log(filteredUserEvents);
     //         setUserEvents(filteredUserEvents);
@@ -72,7 +75,7 @@ function Home() {
     //     console.log(eventId + " " + userId);
     //     try {
     //         // Make a POST request to create a new UserEvent association
-    //         await axios.post(`https://localhost:7097/api/UserEvents?eventId=${eventId}&userId=${userId}`);
+    //         await axios.post(`${api}/UserEvents?eventId=${eventId}&userId=${userId}`);
     //         setUserEvents(prevUserEvents => [...prevUserEvents, { eventId, userId }]);
     //         console.log("Successfully added UserEvent:", { eventId, userId });
     //     } catch (error) {
@@ -89,7 +92,7 @@ function Home() {
     //             return;
     //         }
     //         // Make a DELETE request to remove the UserEvent association
-    //         await axios.delete(`https://localhost:7097/api/UserEvents/${userId}/${eventId}`);
+    //         await axios.delete(`${api}/UserEvents/${userId}/${eventId}`);
     //         // Update the userEvents state to reflect the change
     //         setUserEvents(prevUserEvents => prevUserEvents.filter(userEvent => userEvent.eventId !== eventId));
     //         console.log("success delete");
@@ -100,7 +103,7 @@ function Home() {
 
     const fetchUserRole = async (userId) => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Users/${userId}`);
+            const response = await axios.get(`${api}/Users/${userId}`);
             setUserRole(response.data.role);
         } catch (error) {
             console.error('Error fetching user role:', error);
@@ -109,7 +112,7 @@ function Home() {
 
     const fetchUsers = async () => {
         try{
-            const response = await axios.get(`https://localhost:7097/api/Users`);
+            const response = await axios.get(`${api}/Users`);
             setUsers(response.data);
         }catch(error){
             console.error('Error fetching users.', error);
@@ -140,9 +143,7 @@ function Home() {
                 // If the user hasn't organized any events or their events aren't approved, set the role back to 0
                 user.role = 0;
             }
-
-            const response = await axios.put(`https://localhost:7097/api/Users`, user);
-            console.log(response);
+            await axios.put(`${api}/Users`, user);
         }catch (error) {
             console.log("Error updating role", error);
         }
@@ -175,7 +176,7 @@ function Home() {
 
     const handleRequestJoin = async (userId, eventId) =>{
         try{
-            await axios.post(`https://localhost:7097/api/UserEvents?eventId=${eventId}&userId=${userId}`);
+            await axios.post(`${api}/UserEvents?eventId=${eventId}&userId=${userId}`);
             await Promise.all([fetchEvents(), fetchUserEvents()]);
             console.log("Request created" + userEvents);
         }catch(error){
@@ -207,7 +208,7 @@ function Home() {
             eventToUpdate.approval = newApprovalStatus;
     
             // Make a PUT request to update the event
-            await axios.put(`https://localhost:7097/api/Events`, eventToUpdate);
+            await axios.put(`${api}/Events`, eventToUpdate);
             
             // Fetch updated events after approval
             updateUserRole();
@@ -222,7 +223,7 @@ function Home() {
         const confirmReject = window.confirm("Are you sure you want to reject this event?");
         if (confirmReject) {
             try {
-                await axios.delete(`https://localhost:7097/api/Events/${eventId}`);
+                await axios.delete(`${api}/Events/${eventId}`);
 
                 fetchEvents();
                 console.log("Event rejected:", eventId);

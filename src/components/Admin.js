@@ -1,16 +1,19 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import host from '../host.js';
 
 
 function Admin(){
     const [users, setUsers] = useState([]);
+
+    const api = host.apiUrl;
   
     useEffect(() => {
       fetchUsers();
     }, []);
   
     const fetchUsers = () => {
-      axios.get('https://localhost:7097/api/Users')
+      axios.get(`${api}/Users`)
         .then((response) => {
           console.log(response.data);
           setUsers(response.data);
@@ -32,7 +35,7 @@ function Admin(){
     
         // Send a PUT request to update the user in the backend
         console.log(updatedUser);
-        axios.put(`https://localhost:7097/api/Users`, updatedUser)
+        axios.put(`${api}/Users`, updatedUser)
             .then((response) => {
                 console.log("User updated successfully:", response.data);
             })
@@ -43,7 +46,7 @@ function Admin(){
 
     const handleDelete = async (userId) => {
         try{
-            await axios.delete(`https://localhost:7097/api/Users/${userId}`);
+            await axios.delete(`${api}/Users/${userId}`);
             console.log("Successfully deleted user");
             fetchUsers();
         }catch(error)

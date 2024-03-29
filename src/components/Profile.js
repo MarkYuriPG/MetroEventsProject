@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
+import host from '../host.js';
 
 function Profile() {
     const [user, setUser] = useState(null);
@@ -8,7 +9,8 @@ function Profile() {
     const { userName } = useParams();
     const decodedUserName = decodeURIComponent(userName);
     let navigate = useNavigate();
-    console.log(decodedUserName);
+
+    const api = host.apiUrl;
 
     useEffect(() => {
         if (userName) {
@@ -18,7 +20,7 @@ function Profile() {
 
     const fetchUser = async (userName) => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Users/UserName/${decodedUserName}`);
+            const response = await axios.get(`${api}/Users/UserName/${decodedUserName}`);
             setUser(response.data);
         } catch (error) {
             console.error('Error fetching user profile:', error);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import host from '../host.js';
 
 function Event() {
     const [event, setEvent] = useState(null);
@@ -13,6 +14,8 @@ function Event() {
     
     const { eventName } = useParams();
     const decodedEventName = decodeURIComponent(eventName);
+
+    const api = host.apiUrl;
 
     let navigate = useNavigate();
 
@@ -29,7 +32,7 @@ function Event() {
 
     const fetchEvent = async () => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Events/EventName/${decodedEventName}`);
+            const response = await axios.get(`${api}/Events/EventName/${decodedEventName}`);
             setEvent(response.data);
         } catch (error) {
             console.log('Error fetching event', error);
@@ -38,7 +41,7 @@ function Event() {
 
     const fetchComments = async () => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Comments`);
+            const response = await axios.get(`${api}/Comments`);
             const commentsData = response.data.filter(c => c.eventId === event.eventId);
             setComments(commentsData);
     
@@ -46,7 +49,7 @@ function Event() {
             const userIds = commentsData.map(comment => comment.userId);
             const uniqueUserIds = Array.from(new Set(userIds)); // Get unique user IDs
             const usersResponse = await Promise.all(
-                uniqueUserIds.map(userId => axios.get(`https://localhost:7097/api/Users/${userId}`))
+                uniqueUserIds.map(userId => axios.get(`${api}/Users/${userId}`))
             );
             const usersData = usersResponse.reduce((acc, res) => {
                 acc[res.data.userId] = res.data;
@@ -58,14 +61,36 @@ function Event() {
         }
     };
 
+    // const fetchParticipants = async () => {
+    //     try {
+    //         const response = await axios.get(`${api}/UserEvents/GetUsersByEventId/${event.eventId}`);
+    //         const userIds = response.data;
+    //         const usersResponse = await Promise.all(
+    //             userIds.map(userId => axios.get(`${api}/Users/${userId}`))
+    //         );
+    //         const participantsData = usersResponse.map(res => res.data);
+    //         setParticipants(participantsData);
+    //     } catch (error) {
+    //         console.log('Error fetching participants', error);
+    //     }
+    // };
     const fetchParticipants = async () => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/UserEvents/GetUsersByEventId/${event.eventId}`);
+            const response = await axios.get(`${api}/UserEvents/GetUsersByEventId/${event.eventId}`);
             const userIds = response.data;
             const usersResponse = await Promise.all(
-                userIds.map(userId => axios.get(`https://localhost:7097/api/Users/${userId}`))
+                userIds.map(userId => axios.get(`${api}/Users/${userId}`)
+                    .then(response => response.data)
+                    .catch(error => {
+                        console.log(`Error fetching user with ID ${userId}:`, error);
+                        return null; // Return null for users that don't exist
+                    })
+                )
             );
-            const participantsData = usersResponse.map(res => res.data);
+            
+            // Filter out null values (users that don't exist)
+            const participantsData = usersResponse.filter(user => user !== null);
+            
             setParticipants(participantsData);
         } catch (error) {
             console.log('Error fetching participants', error);
@@ -92,7 +117,7 @@ function Event() {
         // Submit the new comment to the backend
         try {
             const userId = getCurrentUserId(); 
-            await axios.post(`https://localhost:7097/api/Comments`, {
+            await axios.post(`${api}/Comments`, {
                 content: newComment,
                 userId: userId,
                 eventId: event.eventId
@@ -113,7 +138,7 @@ function Event() {
     const handleDeleteComment = async (commentId) => {
         // Delete the comment with the given commentId
         try {
-            await axios.delete(`https://localhost:7097/api/Comments/${commentId}`);
+            await axios.delete(`${api}/Comments/${commentId}`);
             await fetchComments();
         } catch (error) {
             console.log('Error deleting comment', error);

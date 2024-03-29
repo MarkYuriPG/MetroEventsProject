@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Typography } from '@mui/material';
+import host from '../host.js';
 
 function LoginScreen({ setIsLoggedIn, setUserRole }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginMessage, setLoginMessage] = useState('');
   const navigate = useNavigate();
+
+  const api = host.apiUrl;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +25,7 @@ function LoginScreen({ setIsLoggedIn, setUserRole }) {
     e.preventDefault();
 
     try {
-        const response = await axios.post(`https://localhost:7097/api/Users/Login/${username}&${password}`);
+        const response = await axios.post(`${api}/Users/Login/${username}&${password}`);
         console.log('Login successful:', response.data);
         const { userId } = response.data; // Assuming server returns userId
         localStorage.setItem('userId', userId);

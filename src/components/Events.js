@@ -1,18 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import host from '../host.js';
 
 function Events() {
     const [events,setEvents] = useState([]);
     const [formData, setFormData] = useState({ eventName: '', eventDescription: '' });
     const [editableData, setEditableData] = useState({});
     const [isEditable, setIsEditable] = useState({});
-  
+
+    const api = host.apiUrl;
+
     useEffect(() => {
       GetEvents();
     }, []);
   
     const GetEvents = () => {
-      axios.get('https://localhost:7097/api/Events')
+      axios.get(`${api}/Events`)
         .then((response) => {
           console.log(response.data);
           setEvents(response.data);
@@ -23,7 +26,7 @@ function Events() {
     };
   
     const CreateEvent = () => {
-      axios.post('https://localhost:7097/api/Events', formData)
+      axios.post(`${api}/Events`, formData)
         .then(() => {
           console.log(formData);
           GetEvents();
@@ -44,7 +47,7 @@ function Events() {
   
     const DeleteEvent = (eventId) => {
       if (window.confirm("Are you sure you want to delete this event?")) {
-        axios.delete(`https://localhost:7097/api/Events/${eventId}`)
+        axios.delete(`${api}/Events/${eventId}`)
           .then(() => {
             console.log("Event deleted successfully");
             GetEvents();
@@ -87,7 +90,7 @@ function Events() {
   
     const handleSaveEdit = (eventId) => {
       if (window.confirm("Are you sure you want to save the changes?")) {
-        axios.put(`https://localhost:7097/api/Events`, editableData[eventId])
+        axios.put(`${api}/Events`, editableData[eventId])
           .then(() => {
             console.log(editableData);
             GetEvents();

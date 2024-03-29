@@ -1,10 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import host from '../host.js';
 
 function Organizer({ users, events }){
     const [userEvents, setUserEvents] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [pendingUserEvents, setPendingUserEvents] = useState([]);
+
+    const api = host.apiUrl;
 
     useEffect(() => {
         // Fetch user events when the component mounts
@@ -13,7 +17,7 @@ function Organizer({ users, events }){
 
     const fetchUserEvents = async () => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/UserEvents`);
+            const response = await axios.get(`${api}/UserEvents`);
             setUserEvents(response.data);
         } catch (error) {
             console.error('Error fetching user events:', error);
@@ -32,7 +36,7 @@ function Organizer({ users, events }){
 
     const organizedEvents = events.filter(event => event.organizer === getUserById(parseInt(localStorage.getItem('userId'),10)).userName);
     const filteredUserEvents = userEvents.filter(event => organizedEvents.some(orgEvent => orgEvent.eventId === event.eventId));
-    const pendingUserEvents = filteredUserEvents.filter(e => e.status === 0);
+    const pendingEvents = filteredUserEvents.filter(e => e.status === 0);
 
     const handleAccept = async (userId, eventId) => {
         // Implement accept logic here
@@ -46,7 +50,7 @@ function Organizer({ users, events }){
         }
 
         try{
-            await axios.put(`https://localhost:7097/api/UserEvents`, userEvent)
+            await axios.put(`${api}/UserEvents`, userEvent)
             setRefresh(prev => !prev);
         }catch(error)
         {
@@ -57,7 +61,7 @@ function Organizer({ users, events }){
     const handleDecline = async (userId, eventId) => {
         console.log('Declined', userId, eventId);
         try {
-            await axios.delete(`https://localhost:7097/api/UserEvents/${userId}/${eventId}`);
+            await axios.delete(`${api}/UserEvents/${userId}/${eventId}`);
             // Remove the declined UserEvent from the local state
             // Update the state to reflect the change
             setRefresh(prev => !prev);
@@ -66,6 +70,35 @@ function Organizer({ users, events }){
             // Display an error message to the user
         }
     };
+
+    const filterUserEvents = async () => {
+        // Filter out user events where the user doesn't exist
+        const filteredEvents = [];
+        for (const event of pendingUserEvents) {
+            try {
+                const user = await axios.get(`${api}/Users/${event.userId}`);
+                if (user) {
+                    filteredEvents.push(event);
+                } else {
+                    console.log(`User with ID ${event.userId} does not exist.`);
+                    await axios.delete(`${api}/UserEvents/${event.userId}/${event.eventId}`);
+                }
+            } catch (error) {
+                console.error(`Error fetching user with ID ${event.userId}:`, error);
+            }
+        }
+        return filteredEvents;
+    };
+
+    useEffect(() => {
+        filterUserEvents()
+            .then(filteredEvents => {
+                setPendingUserEvents(filteredEvents);
+            })
+            .catch(error => {
+                console.error('Error filtering user events:', error);
+            });
+    }, [userEvents]);
 
     return(
         <div className="table-container">
