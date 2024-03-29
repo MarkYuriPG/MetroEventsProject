@@ -4,22 +4,19 @@ import axios from 'axios';
 
 function Admin(){
     const [users, setUsers] = useState([]);
-    const [formData, setFormData] = useState({ userName: '', password: '' });
-    const [editableData, setEditableData] = useState({});
-    const [isEditable, setIsEditable] = useState({});
   
     useEffect(() => {
-      GetUsers();
+      fetchUsers();
     }, []);
   
-    const GetUsers = () => {
+    const fetchUsers = () => {
       axios.get('https://localhost:7097/api/Users')
         .then((response) => {
           console.log(response.data);
           setUsers(response.data);
         })
         .catch((error) => {
-          console.log("error");
+          console.log("error fetching users", error);
         });
     };
 
@@ -43,6 +40,17 @@ function Admin(){
                 console.log("Error updating user:", error);
             });
     };
+
+    const handleDelete = async (userId) => {
+        try{
+            await axios.delete(`https://localhost:7097/api/Users/${userId}`);
+            console.log("Successfully deleted user");
+            fetchUsers();
+        }catch(error)
+        {
+            console.log("error deleting user", error);
+        }
+    }
 
     const getUserStatus = (status) => {
         switch (status) {
@@ -87,7 +95,7 @@ function Admin(){
                                 </select>
                                 </td>
                                 <td>
-                                    <button>Delete</button>
+                                    <button onClick={()=>handleDelete(user.userId)}>Delete</button>
                                 </td>
                             </tr>
                         ))}

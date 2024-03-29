@@ -35,6 +35,11 @@ function Card({ event }) {
         }
     };
 
+    const isPending = () => {
+        // Check if the user has already sent a request for the event
+        return userEvents.some(e => e.userId === userId && e.eventId === event.eventId && e.status === 0);
+    };
+
     const checkRequest = () => {
         // Check if the user has already joined the event
         const joinedEvent = userEvents.find(e => e.userId === userId && e.eventId === event.eventId);
@@ -51,8 +56,8 @@ function Card({ event }) {
             {checkRequest() ? (
                 <p>Already Joined</p>
             ) : (
-                <button onClick={() => handleJoinRequest(event.eventId)} disabled={!!userEvents.find(e => e.userId === userId && e.eventId === event.eventId)}>
-                    Request to Join
+                <button onClick={() => handleJoinRequest(event.eventId)} disabled={isPending()}>
+                    {isPending() ? "Request Sent" : "Request to Join"}
                 </button>
             )}
             <Link to={`/event/${encodeURIComponent(event.eventName)}`}>View Details</Link>
