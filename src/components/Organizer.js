@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 function Organizer({ users, events }){
     const [userEvents, setUserEvents] = useState([]);
@@ -79,7 +80,11 @@ function Organizer({ users, events }){
                 <tbody>
                     {pendingUserEvents.map(req => (
                         <tr key={req.userId && req.eventId}>
-                            <td>{getUserById(req.userId).userName}</td>
+                            <td>
+                                <Link to={`/profile/${encodeURIComponent(getUserById(req.userId).userName)}`}>
+                                    {getUserById(req.userId).userName}
+                                </Link>
+                            </td>
                             <td>{getEventById(req.eventId).eventName}</td>
                             <td>
                                 <button onClick={() => handleAccept(req.userId, req.eventId)}>Accept</button>

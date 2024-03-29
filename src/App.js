@@ -26,7 +26,7 @@ function App() {
         {isLoggedIn ? (
             <>
               <Route path="/home" element={<Home />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:userName" element={<Profile />} />
               <Route path="/event/:eventName" element={<Event />} />
               <Route path="/" element={<Navigate to="/home" />} />
             </>

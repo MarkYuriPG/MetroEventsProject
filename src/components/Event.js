@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Event() {
     const [event, setEvent] = useState(null);
@@ -9,9 +10,11 @@ function Event() {
     const [showInput, setShowInput] = useState(false);
     const [users, setUsers] = useState({});
     const [participants, setParticipants] = useState([]);
-
+    
     const { eventName } = useParams();
     const decodedEventName = decodeURIComponent(eventName);
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         fetchEvent();
@@ -119,6 +122,7 @@ function Event() {
 
     return (
         <div>
+            <button onClick={() => navigate(-1)}>Back</button>
             {event ? (
                 <div>
                     <h1>Event: {event.eventName}</h1>
@@ -127,7 +131,9 @@ function Event() {
                     <p>Participants: </p>
                     <ul>
                         {participants.map(participant => (
-                            <li key={participant.userId}>{participant.userName}</li>
+                            <li key={participant.userId}>
+                                <Link to={`/profile/${encodeURIComponent(participant.userName)}`}>{participant.userName}</Link>
+                            </li>
                         ))}
                     </ul>
                     <div className="comments-container">
@@ -141,7 +147,12 @@ function Event() {
                         )}
                         {comments && comments.map(comment => (
                             <div key={comment.commentId} className="comment-box">
-                                <h4 className="username">{users[comment.userId]?.userName || 'Unknown User'}: </h4>
+                                <h4 className="username">
+                                    <Link to={`/profile/${encodeURIComponent(users[comment.userId]?.userName || 'Unknown User')}`}>
+                                        {users[comment.userId]?.userName || 'Unknown User'}
+                                    </Link>
+                                    :
+                                </h4>
                                 <p>{comment.content}</p>
                                 {comment.userId === getCurrentUserId() && (
                                         <button onClick={() => handleDeleteComment(comment.commentId)} style={{marginLeft: '10px'}}>

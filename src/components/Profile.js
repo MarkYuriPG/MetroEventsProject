@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {useParams, useNavigate} from 'react-router-dom';
 
 function Profile() {
     const [user, setUser] = useState(null);
-    const userId = localStorage.getItem('userId'); // Assuming you have stored the user's ID in localStorage
+    // const userId = localStorage.getItem('userId'); // Assuming you have stored the user's ID in localStorage
+    const { userName } = useParams();
+    const decodedUserName = decodeURIComponent(userName);
+    let navigate = useNavigate();
+    console.log(decodedUserName);
 
     useEffect(() => {
-        if (userId) {
-            fetchUser(userId);
+        if (userName) {
+            fetchUser(userName);
         }
-    }, [userId]);
+    }, [userName]);
 
-    const fetchUser = async (userId) => {
+    const fetchUser = async (userName) => {
         try {
-            const response = await axios.get(`https://localhost:7097/api/Users/${userId}`);
+            const response = await axios.get(`https://localhost:7097/api/Users/UserName/${decodedUserName}`);
             setUser(response.data);
         } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -58,6 +63,7 @@ function Profile() {
             ) : (
                 <p>Loading profile...</p>
             )}
+            <button onClick={() => navigate(-1)}>Back</button> 
         </div>
     );
 }
