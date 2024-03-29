@@ -5,6 +5,9 @@ import CreateEventDialog from './CreateEventDialog';
 import Admin from './Admin';
 import Organizer from './Organizer';
 
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css';
+
 function Home() {
     const [events, setEvents] = useState([]);
     const [approvedEvents, setApprovedEvents] = useState([]);
@@ -36,8 +39,8 @@ function Home() {
         try {
             const response = await axios.get('https://localhost:7097/api/Events');
             setEvents(response.data);
-            setApprovedEvents(response.data.filter(event => event.approval === 2));
-            console.log(events);
+            const approvedEventsData = response.data.filter(event => event.approval === 2);
+            setApprovedEvents(approvedEventsData);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
@@ -257,6 +260,46 @@ function Home() {
         setShowOrganizeEvents(!showOrganizeEvents);
     };
 
+    const [triggeredEvents, setTriggeredEvents] = useState([]);
+
+    useEffect(() => {
+        checkEventsDate(approvedEvents);
+    }, [approvedEvents, triggeredEvents]);
+
+    const checkEventsDate = (approvedEventsData) => {
+        const currentDate = new Date();
+        const formattedCurrentDate = formatDate(currentDate);
+    
+        approvedEventsData.forEach(event => {
+            const formattedEventDate = formatDate(new Date(event.date));
+            if (formattedCurrentDate === formattedEventDate && !triggeredEvents.includes(event.eventId)) {
+                toast.info(`"${event.eventName}" is happening today!`);
+                setTriggeredEvents(prevState => [...prevState, event.eventId]);
+            }
+        });
+    };
+    // const checkEventsDate = (approvedEventsData) => {
+    //     const currentDate = new Date();
+    //     const formattedCurrentDate = formatDate(currentDate);
+    
+    //     approvedEventsData.forEach(event => {
+    //         const formattedEventDate = formatDate(new Date(event.date));
+    //         if (formattedCurrentDate === formattedEventDate) {
+    //             toast.info(`"${event.eventName}" is happening today!`);
+    //         }
+    //     });
+    // };
+
+    const formatDate = (date) => {
+        if (!date) return '';
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${month}/${day}/${year}`;
+    };
+
     return (
         <div className="event-container">
             <button onClick={handleCreateEventOpen}>Create Event</button>
@@ -333,6 +376,7 @@ function Home() {
                 ))}
             </div>
             {showCreateEvent && <CreateEventDialog onClose={handleCreateEventClose} organizer={userId}/>}
+            <ToastContainer />
         </div>
     );
 }
