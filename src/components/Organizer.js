@@ -6,7 +6,6 @@ import host from '../host.js';
 function Organizer({ users, events }){
     const [userEvents, setUserEvents] = useState([]);
     const [refresh, setRefresh] = useState(false);
-    const [pendingUserEvents, setPendingUserEvents] = useState([]);
 
     const api = host.apiUrl;
 
@@ -36,7 +35,7 @@ function Organizer({ users, events }){
 
     const organizedEvents = events.filter(event => event.organizer === getUserById(parseInt(localStorage.getItem('userId'),10)).userName);
     const filteredUserEvents = userEvents.filter(event => organizedEvents.some(orgEvent => orgEvent.eventId === event.eventId));
-    const pendingEvents = filteredUserEvents.filter(e => e.status === 0);
+    const pendingUserEvents = filteredUserEvents.filter(e => e.status === 0);
 
     const handleAccept = async (userId, eventId) => {
         // Implement accept logic here
@@ -71,35 +70,6 @@ function Organizer({ users, events }){
         }
     };
 
-    const filterUserEvents = async () => {
-        // Filter out user events where the user doesn't exist
-        const filteredEvents = [];
-        for (const event of pendingUserEvents) {
-            try {
-                const user = await axios.get(`${api}/Users/${event.userId}`);
-                if (user) {
-                    filteredEvents.push(event);
-                } else {
-                    console.log(`User with ID ${event.userId} does not exist.`);
-                    await axios.delete(`${api}/UserEvents/${event.userId}/${event.eventId}`);
-                }
-            } catch (error) {
-                console.error(`Error fetching user with ID ${event.userId}:`, error);
-            }
-        }
-        return filteredEvents;
-    };
-
-    useEffect(() => {
-        filterUserEvents()
-            .then(filteredEvents => {
-                setPendingUserEvents(filteredEvents);
-            })
-            .catch(error => {
-                console.error('Error filtering user events:', error);
-            });
-    }, [userEvents]);
-
     return(
         <div className="table-container">
             <table className='event-table'>
@@ -111,20 +81,28 @@ function Organizer({ users, events }){
                     </tr>
                 </thead>
                 <tbody>
-                    {pendingUserEvents.map(req => (
-                        <tr key={req.userId && req.eventId}>
-                            <td>
-                                <Link to={`/profile/${encodeURIComponent(getUserById(req.userId).userName)}`}>
-                                    {getUserById(req.userId).userName}
-                                </Link>
-                            </td>
-                            <td>{getEventById(req.eventId).eventName}</td>
-                            <td>
-                                <button onClick={() => handleAccept(req.userId, req.eventId)}>Accept</button>
-                                <button onClick={() => handleDecline(req.userId, req.eventId)}>Decline</button>
-                            </td>
-                        </tr>
-                    ))}
+                    {pendingUserEvents.map(req => {
+                        const user = getUserById(req.userId);
+                        if (user) {
+                            return (
+                                <tr key={req.userId && req.eventId}>
+                                    <td>
+                                        <Link to={`/profile/${encodeURIComponent(user.userName)}`}>
+                                            {user.userName}
+                                        </Link>
+                                    </td>
+                                    <td>{getEventById(req.eventId).eventName}</td>
+                                    <td>
+                                        <button onClick={() => handleAccept(req.userId, req.eventId)}>Accept</button>
+                                        <button onClick={() => handleDecline(req.userId, req.eventId)}>Decline</button>
+                                    </td>
+                                </tr>
+                            );
+                        } else {
+                            console.log(`User with ID ${req.userId} does not exist.`);
+                            return null; // Skip rendering this event
+                        }
+                    })}
                 </tbody>
             </table>
         </div>
