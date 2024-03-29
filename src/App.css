@@ -118,3 +118,24 @@ button {
   margin-bottom: 50px;
   width: 400px;
 }
+
+.comments-container {
+  margin-top: 20px;
+}
+
+.comment-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Align items vertically */
+}
+
+.comment-box p {
+  margin: 0;
+}
+
+.comment-box .username {
+  font-weight: bold;
+  margin-right: 10px; /* Add space between username and comment content */
+}

@@ -55,7 +55,7 @@ function Card({ event }) {
                     Request to Join
                 </button>
             )}
-            <Link to={`/event/${event.eventId}`}>View Details</Link>
+            <Link to={`/event/${encodeURIComponent(event.eventName)}`}>View Details</Link>
         </div>
     );
 }
