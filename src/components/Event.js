@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import host from '../host.js';
+import { Button, Typography, TextField } from '@mui/material';
+import { buttonStyles, secondaryButtonStyles, textFieldStyles } from './styled_components/Styles.js';
+import '../App.css';
 
 function Event() {
     const [event, setEvent] = useState(null);
@@ -146,44 +149,110 @@ function Event() {
     };
 
     return (
-        <div>
-            <button onClick={() => navigate(-1)}>Back</button>
+        <div className="details-view">
+            <Button
+                type="button"
+                fullWidth
+                variant="contained"
+                onClick={() => navigate(-1)}
+                sx={{
+                    ...buttonStyles,
+                    width: '100px',
+                    margin: '20px',
+                }}
+            >
+                Back
+            </Button>
             {event ? (
                 <div>
-                    <h1>Event: {event.eventName}</h1>
-                    <p>Organizer: {event.organizer}</p>
-                    <p>About: {event.eventDescription}</p>
-                    <p>Participants: </p>
-                    <ul>
-                        {participants.map(participant => (
-                            <li key={participant.userId}>
-                                <Link to={`/profile/${encodeURIComponent(participant.userName)}`}>{participant.userName}</Link>
-                            </li>
-                        ))}
-                    </ul>
+                    <div className="event-details-container">
+                        <h1>Event: {event.eventName}</h1>
+                        <p>Organizer: {event.organizer}</p>
+                        <p>About: {event.eventDescription}</p>
+                        <p>Participants: </p>
+                        <ul>
+                            {participants.map(participant => (
+                                <li key={participant.userId}>
+                                    <Link 
+                                        to={`/profile/${encodeURIComponent(participant.userName)}`}
+                                        style={{ textDecoration: 'none', color: '#fff', fontWeight: 'bold' }}
+                                    >
+                                        {participant.userName}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                     <div className="comments-container">
-                        <p>Comments:</p>
-                        <button onClick={handleAddComment}>{showInput ? 'Cancel' : 'Add comment'}</button>
+                        <h2>Comments {comments ? `- ${comments.length}` : ''}</h2>
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant="contained"
+                            onClick={handleAddComment}
+                            sx={{
+                                ...secondaryButtonStyles,
+                                width: '150px',
+                                mb: '20px',
+                            }}
+                        >
+                            {showInput ? 'Cancel' : 'Add comment'}
+                        </Button>
                         {showInput && (
                             <div>
-                                <input type="text" value={newComment} onChange={handleInputChange} />
-                                <button onClick={handleSubmit}>Submit</button>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    fullWidth
+                                    label="Add a comment"
+                                    value={newComment}
+                                    onChange={handleInputChange}
+                                    sx={textFieldStyles}
+                                />
+                                <Button
+                                    type="button"
+                                    fullWidth
+                                    variant="contained"
+                                    onClick={handleSubmit}
+                                    sx={{
+                                        ...buttonStyles,
+                                        width: '100px',
+                                        mb: '30px',
+                                    }}
+                                >
+                                    Comment
+                                </Button>
                             </div>
                         )}
                         {comments && comments.map(comment => (
                             <div key={comment.commentId} className="comment-box">
                                 <h4 className="username">
-                                    <Link to={`/profile/${encodeURIComponent(users[comment.userId]?.userName || 'Unknown User')}`}>
+                                    <Link 
+                                        to={`/profile/${encodeURIComponent(users[comment.userId]?.userName || 'Unknown User')}`}
+                                        style={{ textDecoration: 'none', color: '#fff', fontWeight: 'bold' }}
+                                    >
                                         {users[comment.userId]?.userName || 'Unknown User'}
                                     </Link>
                                     :
                                 </h4>
-                                <p>{comment.content}</p>
+                                <div style={{ flex: 1 }}>
+                                    <p>{comment.content}</p>
+                                </div>
                                 {comment.userId === getCurrentUserId() && (
-                                        <button onClick={() => handleDeleteComment(comment.commentId)} style={{marginLeft: '10px'}}>
-                                            Delete
-                                        </button>
-                                    )}
+                                    <Button
+                                        type="button"
+                                        fullWidth
+                                        variant="contained"
+                                        onClick={() => handleDeleteComment(comment.commentId)}
+                                        sx={{
+                                            ...secondaryButtonStyles,
+                                            width: '100px',
+                                            mb: '10px',
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
+                                )}
                             </div>
                         ))}
                     </div>
