@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import host from '../host.js';
+import { buttonStyles, secondaryButtonStyles, textFieldStyles } from './styled_components/Styles.js';
+import '../App.css';
 
 function Registration() {
   const [formData, setFormData] = useState({
@@ -43,74 +45,82 @@ function Registration() {
 
   return (
     <div className="form-view">
-      <form onSubmit={handleSubmit} className="registration-form">
-        <Typography component="h1" variant="h5">
-          Registration
-        </Typography>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="username"
-          label="Username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="password"
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <FormControl fullWidth variant="outlined" margin="normal">
-          <InputLabel id="role-label">Role</InputLabel>
-          <Select
-            labelId="role-label"
-            id="role"
-            name="role"
-            value={formData.role}
+      <div className="form-container">
+        <form onSubmit={handleSubmit} className="registration-form">
+          <Typography component="h1" variant="h5">
+            Registration
+          </Typography>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            value={formData.username}
             onChange={handleChange}
-            label="Role"
             required
+            sx={textFieldStyles}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            id="password"
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            sx={textFieldStyles}
+          />
+          <FormControl fullWidth variant="outlined" margin="normal" sx={textFieldStyles}>
+            <InputLabel id="role-label" sx={textFieldStyles}>Role</InputLabel>
+            <Select
+              labelId="role-label"
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              label="Role"
+              required
+            >
+              <MenuItem value={0}>Regular User</MenuItem>
+              <MenuItem value={2}>Administrator</MenuItem>
+            </Select>
+          </FormControl>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={buttonStyles}
           >
-            <MenuItem value={0}>Regular User</MenuItem>
-            <MenuItem value={2}>Administrator</MenuItem>
-          </Select>
-        </FormControl>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-        >
-          Register
-        </Button>
-        <Button
-          type="button"
-          fullWidth
-          variant="outlined"
-          color="secondary"
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-      </form>
-      {registrationMessage && (
-        <Typography variant="body2" color={registrationMessage.includes('successful') ? 'green' : 'red'}>
-          {registrationMessage}
+            Register
+          </Button>
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            onClick={handleCancel}
+            sx={secondaryButtonStyles}
+          >
+            Cancel
+          </Button>
+        </form>
+        {registrationMessage && (
+          <Typography variant="body2" color={registrationMessage.includes('successful') ? 'green' : 'red'}>
+            {registrationMessage}
+          </Typography>
+        )}
+        <Typography variant="body2">
+          Already have an account?{' '}
+          <Link to="/login" style={{ textDecoration: 'none', color: '#cb3f63', fontWeight: 'bold' }}>
+            Login
+          </Link>
         </Typography>
-      )}
-      <Typography variant="body2">
-        Already have an account? <Link to="/login">Login</Link>
-      </Typography>
+      </div>
     </div>
   );
 }

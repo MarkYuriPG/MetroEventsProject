@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import Event from './Event';
 import host from '../host.js';
 
+import { Button, Typography } from '@mui/material';
+import { buttonStyles, secondaryButtonStyles } from './styled_components/Styles.js';
+import '../App.css';
+
 function Card({ event }) {
     const [userEvents, setUserEvents] = useState([]);
     const [userId, setUserId] = useState(0);
@@ -51,19 +55,42 @@ function Card({ event }) {
 
     return (
         <div className="event-card">
-            <h2>{event.eventName}</h2>
-            <p>{event.eventDescription}</p>
-            <p>Organizer: {event.organizer}</p>
-            <p>Date: {event.date}</p>
-            <p>Location: {event.location}</p>
-            {checkRequest() ? (
-                <p>Already Joined</p>
-            ) : (
-                <button onClick={() => handleJoinRequest(event.eventId)} disabled={isPending()}>
-                    {isPending() ? "Request Sent" : "Request to Join"}
-                </button>
-            )}
-            <Link to={`/event/${encodeURIComponent(event.eventName)}`}>View Details</Link>
+            <div className="event-content">
+                <h2>{event.eventName}</h2>
+                <p>{event.eventDescription}</p>
+                <p>Organizer: {event.organizer}</p>
+                <p>Date: {event.date}</p>
+                <p>Location: {event.location}</p>
+            </div>
+            <div className="event-buttons-container">
+                {checkRequest() ? (
+                    <p>Already Joined</p>
+                ) : (
+                    <Button
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        onClick={() => handleJoinRequest(event.eventId)} disabled={isPending()}
+                        sx={{
+                            ...buttonStyles,
+                            width: '200px',
+                        }}
+                    >
+                        {isPending() ? "Request Sent" : "Request to Join"}
+                    </Button>
+                )}
+                <Button
+                    variant="contained"
+                    component={Link}
+                    to={`/event/${encodeURIComponent(event.eventName)}`}
+                    sx={{
+                        ...secondaryButtonStyles,
+                        width: '200px',
+                    }}
+                >
+                    View Details
+                </Button>
+            </div>
         </div>
     );
 }

@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+body {
+  background-color: #0d0d0d;
+  color: white;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -46,8 +51,23 @@ button {
 
 .table-container{
   display: flex;
-  justify-content: center;
+  justify-content: middle;
   padding: 40px;
+}
+
+.event-container {
+  background-color: #1f1f1f;
+  margin: 50px 150px 50px 150px;
+  padding: 0px 0px 50px 0px;
+  border-radius: 20px;
+}
+
+.header-container {
+  margin: 20px 20px 50px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px;
 }
 
 .event-table {
@@ -69,12 +89,29 @@ button {
   width: calc(33.33% - 20px);
   min-height: 300px;
   margin: 10px;
-  padding: 20px;
-  border: 1px solid #ccc;
+  padding: 20px 20px 0px 20px;
   border-radius: 10px; 
   display: inline-block;
   vertical-align: top;
-  background-color: #fff;
+  background-color: #404040;
+  position: relative;
+}
+
+.event-content {
+  flex: 1;
+}
+
+.event-buttons-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.event-card button {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .event-card h2 {
@@ -85,26 +122,23 @@ button {
   margin-bottom: 10px;
 }
 
-.event-card button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.event-card button:hover {
-  background-color: #0056b3;
-}
-
-
 .form-view {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: middle;
   min-height: 100vh;
+}
+
+.form-container {
+  background-color: #1f1f1f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: middle;
+  padding: 100px 150px 150px 150px;
+  margin: 70px;
+  border-radius: 20px;
 }
 
 .registration-form {
@@ -138,4 +172,13 @@ button {
 .comment-box .username {
   font-weight: bold;
   margin-right: 10px; /* Add space between username and comment content */
+}
+
+.form-button {
+  margin-top: 10px;
+}
+
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #1f1f1f inset !important;
+  -webkit-text-fill-color: #1f1f1f !important;
 }

@@ -27,7 +27,7 @@ function MyAppBar({ isLoggedIn, handleLogout }) {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: '#1f1f1f' }}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Typography variant="h6" component="div">
           Metro Events

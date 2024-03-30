@@ -8,6 +8,9 @@ import host from '../host.js';
 
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
 import 'react-toastify/dist/ReactToastify.css';
+import { Button, Typography } from '@mui/material';
+import { buttonStyles, secondaryButtonStyles } from './styled_components/Styles.js';
+import '../App.css';
 
 function Home() {
     const [events, setEvents] = useState([]);
@@ -302,82 +305,144 @@ function Home() {
     };
 
     return (
-        <div className="event-container">
-            <button onClick={handleCreateEventOpen}>Create Event</button>
-            {(userRole === 1 || userRole === 2) && (
-                <button onClick={handleOrganizeEventsClick}>Organize Events</button>
-            )}
-            {userRole === 2 && (
-                <>
-                    <button onClick={handleAppUsers}>App Users</button>
-                    <button onClick={handleOnclickEventRequest}>Event Requests</button>
-                </>
-            )}
-            {showOrganizeEvents && (
-                <Organizer
-                    users={users}
-                    events={events}
-                />
-            )}
-            {showRefresh && (<button onClick={fetchEvents}>Refresh</button>)}
-            {showAppUsers && (
-                <Admin/>
-            )}
-            {showEventRequests && (
-                <div className="table-container">
-                    <table className='event-table'>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Event Name</th>
-                                <th>Organizer</th>
-                                <th>Description</th>
-                                <th>Location</th>
-                                <th>No. of Participants</th>
-                                <th>Status</th>
-                                <th>Request</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {events.map(request => (
-                                <tr key={request.eventId}>
-                                    <td>{request.date}</td>
-                                    <td>{request.eventName}</td>
-                                    <td>{request.organizer}</td>
-                                    <td>{request.eventDescription}</td>
-                                    <td>{request.location}</td>
-                                    <td>{request.likes}</td>
-                                    <td>{getStatus(request.approval)}</td>
-                                    <td>
-                                    {getStatus(request.approval) === 'Approved' ? (
-                                        <button onClick={() => handleApprove(request.eventId)}>Disapprove</button>
-                                    ) : (
-                                        <button onClick={() => handleApprove(request.eventId)}>Approve</button>
-                                    )}  
-                                        {getStatus(request.approval) !== 'Approved' && (
-                                            <button onClick={() => handleReject(request.eventId)}>Reject</button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+        <div className="event-view">
+            <div className="event-container">
+                <div className="header-container">
+                    <Button
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        onClick={handleCreateEventOpen}
+                        sx={{
+                            ...buttonStyles,
+                            width: '200px',
+                        }}
+                    >
+                        Create Event
+                    </Button>
+                    {(userRole === 1 || userRole === 2) && (
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant="contained"
+                            onClick={handleOrganizeEventsClick}
+                            sx={{
+                                ...secondaryButtonStyles,
+                                width: '200px',
+                            }}
+                        >
+                            Organize Events
+                        </Button>
+                    )}
+                    {userRole === 2 && (
+                        <>
+                            <Button
+                                type="button"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleAppUsers}
+                                sx={{
+                                    ...secondaryButtonStyles,
+                                    width: '150px',
+                                }}
+                            >
+                                App Users
+                            </Button>
+                            <Button
+                                type="button"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleOnclickEventRequest}
+                                sx={{
+                                    ...secondaryButtonStyles,
+                                    width: '200px',
+                                }}
+                            >
+                                Event Requests
+                            </Button>
+                        </>
+                    )}
+                    {showOrganizeEvents && (
+                        <Organizer
+                            users={users}
+                            events={events}
+                        />
+                    )}
+                    {showRefresh && (
+
+                        <Button
+                                type="button"
+                                fullWidth
+                                variant="contained"
+                                onClick={fetchEvents}
+                                sx={{
+                                    ...buttonStyles,
+                                    width: '100px',
+                                }}
+                            >
+                                Refresh
+                            </Button>
+                    )}
+                    {showAppUsers && (
+                        <Admin/>
+                    )}
                 </div>
-            )}
-            <div className="event-cards">
-                {approvedEvents.map(event => (
-                    <Card
-                        key={event.eventId}
-                        event={event}
-                        // onLike={() => isEventLikedByUser(event.eventId) ? handleUnlikeEvent(event.eventId) : handleLikeEvent(event.eventId)}
-                        // isLiked={isEventLikedByUser(event.eventId)}
-                        // onJoinRequest={()=> handleRequestJoin(userId, event.eventId)}
-                        // checkSent={()=>checkRequest(userId, event.eventId)}
-                    />
-                ))}
+                {showEventRequests && (
+                    <div className="table-container">
+                        <table className='event-table'>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Event Name</th>
+                                    <th>Organizer</th>
+                                    <th>Description</th>
+                                    <th>Location</th>
+                                    <th>No. of Participants</th>
+                                    <th>Status</th>
+                                    <th>Request</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {events.map(request => (
+                                    <tr key={request.eventId}>
+                                        <td>{request.date}</td>
+                                        <td>{request.eventName}</td>
+                                        <td>{request.organizer}</td>
+                                        <td>{request.eventDescription}</td>
+                                        <td>{request.location}</td>
+                                        <td>{request.likes}</td>
+                                        <td>{getStatus(request.approval)}</td>
+                                        <td>
+                                        {getStatus(request.approval) === 'Approved' ? (
+                                            <button onClick={() => handleApprove(request.eventId)}>Disapprove</button>
+                                        ) : (
+                                            <button onClick={() => handleApprove(request.eventId)}>Approve</button>
+                                        )}  
+                                            {getStatus(request.approval) !== 'Approved' && (
+                                                <button onClick={() => handleReject(request.eventId)}>Reject</button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+                <div className="event-cards">
+                    {approvedEvents.map(event => (
+                        <Card
+                            key={event.eventId}
+                            event={event}
+                            // onLike={() => isEventLikedByUser(event.eventId) ? handleUnlikeEvent(event.eventId) : handleLikeEvent(event.eventId)}
+                            // isLiked={isEventLikedByUser(event.eventId)}
+                            // onJoinRequest={()=> handleRequestJoin(userId, event.eventId)}
+                            // checkSent={()=>checkRequest(userId, event.eventId)}
+                        />
+                    ))}
+                </div>
+                {showCreateEvent && <CreateEventDialog onClose={handleCreateEventClose} organizer={userId}/>}
+                <ToastContainer />
             </div>
-            {showCreateEvent && <CreateEventDialog onClose={handleCreateEventClose} organizer={userId}/>}
-            <ToastContainer />
         </div>
     );
 }
